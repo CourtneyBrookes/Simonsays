@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .simon-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .simon-button {
+            width: 100px;
+            height: 100px;
+            border: none;
+            cursor: pointer;
+            filter: brightness(1.0); /* Adjust the brightness here */
+        }
+        #red { background-color: red; }
+        #blue { background-color: blue; }
+        #green { background-color: green; }
+        #yellow { background-color: yellow; }
+    </style>
+</head>
+<body>
+    <div class="simon-container">
+        <button class="simon-button" id="red" onclick="addToSequence('red')"></button>
+        <button class="simon-button" id="blue" onclick="addToSequence('blue')"></button>
+        <button class="simon-button" id="green" onclick="addToSequence('green')"></button>
+        <button class="simon-button" id="yellow" onclick="addToSequence('yellow')"></button>
+    </div>
+    <button onclick="startGame()">Start Game</button>
+    <button onclick="resetGame()">Reset</button>
+    <h1></h1>
+
+    <script>
+        let sequence = [];
+        let playerSequence = [];
+        let level = 1;
+
+        function addToSequence(color) {
+            playerSequence.push(color);
+            if (playerSequence.length === sequence.length) {
+                checkSequence();
+            }
+        }
+
+        function checkSequence() {
+            for (let i = 0; i < sequence.length; i++) {
+                if (sequence[i] !== playerSequence[i]) {
+                    alert("Wrong sequence! Try again.");
+                    resetGame();
+                    return;
+                }
+            }
+
+            playerSequence = [];
+            setTimeout(playSequence, 1000);
+        }
+
+        function playSequence() {
+            const colors = ["red", "blue", "green", "yellow"];
+            sequence.push(colors[Math.floor(Math.random() * 4)]);
+            document.querySelector("h1").textContent = `Level ${level++}`;
+            for (let i = 0; i < sequence.length; i++) {
+                setTimeout(() => {
+                    document.getElementById(sequence[i]).style.filter = "brightness(0.6)"; // Darken the color
+                    setTimeout(() => {
+                        document.getElementById(sequence[i]).style.filter = "brightness(1.0)"; // Reset the brightness
+                    }, 500);
+                }, i * 1000);
+            }
+        }
+
+        function startGame() {
+            level = 1;
+            sequence = [];
+            playerSequence = [];
+            playSequence();
+        }
+
+        function resetGame() {
+            level = 1;
+            sequence = [];
+            playerSequence = [];
+            document.querySelector("h1").textContent = "";
+        }
+    </script>
+</body>
+</html>
